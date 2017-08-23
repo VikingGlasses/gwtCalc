@@ -92,8 +92,9 @@ public class Gwtcalc implements EntryPoint {
 			if (lastIsOperation(currentText)) {
 				newText = removeLastChar(currentText);
 			} else if (containsOperation(currentText)) {
-				newText = calc.getResult();
-				handle(CalcButtonEnum.ENTER);
+//				newText = calc.getResult();
+//				handle(CalcButtonEnum.ENTER);
+				return;
 			}
 			// add operation to string
 			newText += btnEnum.getSymbol();
