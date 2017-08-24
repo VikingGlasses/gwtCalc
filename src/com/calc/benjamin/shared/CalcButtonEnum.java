@@ -50,7 +50,7 @@ public enum CalcButtonEnum {
 	}
 	
 	public static CalcButtonEnum[] getOperations() {
-		return new CalcButtonEnum[]{PLUS, DIVITION, MULTIPLICATION, MODULUS};
+		return new CalcButtonEnum[]{PLUS, MINUS, DIVITION, MULTIPLICATION, MODULUS};
 	}
 
 	public static CalcButtonEnum getE(int nativeKeyCode) {
