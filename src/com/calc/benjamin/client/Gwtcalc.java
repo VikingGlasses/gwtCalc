@@ -82,7 +82,6 @@ public class Gwtcalc implements EntryPoint {
 		case DIVITION:
 		case MULTIPLICATION:
 		case PLUS:
-		case MINUS:
 			if (currentText.isEmpty()) {
 				return;
 			}
@@ -90,7 +89,8 @@ public class Gwtcalc implements EntryPoint {
 			// if last was also an operation replace with new operation
 			// else if operation already done, start new calculation on result
 			if (lastIsOperation(currentText)) {
-				newText = removeLastChar(currentText);
+//				newText = removeLastChar(currentText);
+				return;
 			} else if (containsOperation(currentText)) {
 //				newText = calc.getResult();
 //				handle(CalcButtonEnum.ENTER);
@@ -99,6 +99,11 @@ public class Gwtcalc implements EntryPoint {
 			// add operation to string
 			newText += btnEnum.getSymbol();
 			activeBox.setText(newText);
+			break;
+		case MINUS:
+			if (currentText.isEmpty() || lastIsOperation(currentText)) {
+				activeBox.setText(currentText + btnEnum.getSymbol());
+			}
 			break;
 		default:
 			activeBox.setText(currentText + btnEnum.getSymbol());
