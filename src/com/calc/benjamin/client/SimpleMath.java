@@ -43,6 +43,9 @@ public class SimpleMath {
 	}
 
 	public static double divide(double val1, double val2) {
+		if (val1 != 0 && val2 == 0) {
+			return Double.NaN;
+		}
 		return val1 / val2;
 	}
 
