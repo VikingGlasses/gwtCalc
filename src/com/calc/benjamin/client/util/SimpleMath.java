@@ -1,4 +1,6 @@
-package com.calc.benjamin.client;
+package com.calc.benjamin.client.util;
+
+import com.calc.benjamin.client.exception.NoSuchOperator;
 
 public class SimpleMath {
 

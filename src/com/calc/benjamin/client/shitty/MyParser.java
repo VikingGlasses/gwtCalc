@@ -1,4 +1,4 @@
-package com.calc.benjamin.client;
+package com.calc.benjamin.client.shitty;
 
 import java.util.ArrayList;
 import java.util.List;

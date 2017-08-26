@@ -1,7 +1,13 @@
 package com.calc.benjamin.client;
 
+import com.calc.benjamin.client.composite.Calculator;
+import com.calc.benjamin.client.exception.InvalidExpressionException;
+import com.calc.benjamin.client.exception.MissingValueException;
+import com.calc.benjamin.client.shitty.Evaluator;
+import com.calc.benjamin.client.shitty.SimpleEvaluator;
 import com.calc.benjamin.shared.CalcButtonEnum;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -26,7 +32,7 @@ public class Gwtcalc implements EntryPoint {
 	public void onModuleLoad() {
 		calc = new Calculator();
 
-		FlowPanel keyPad = calc.keyPad;
+		FlowPanel keyPad = calc.getKeyPad();
 		// TODO change layout
 		CalcButtonEnum[] layoutOrder = { CalcButtonEnum.MODULUS, CalcButtonEnum.DIVITION, CalcButtonEnum.MULTIPLICATION,
 				CalcButtonEnum.BACKSPACE, CalcButtonEnum.ONE, CalcButtonEnum.TWO, CalcButtonEnum.THREE,
@@ -42,7 +48,7 @@ public class Gwtcalc implements EntryPoint {
 			keyPad.add(btn);
 		}
 		// TODO change UI split calcBox to 3 labels
-		calcBox = calc.calcBox;
+		calcBox = calc.getCalcBox();
 		calcBox.setEnabled(false);
 		calcBox.addKeyDownHandler(event -> {
 			// switch case keyCode to filter out bad keys.
@@ -112,6 +118,7 @@ public class Gwtcalc implements EntryPoint {
 			return;
 		}
 		try {
+			
 			double result = evaluator.eval(calcBox.getText());
 			String resultText = NumberFormat.getFormat("#.####").format(result);
 			calc.setResult(resultText);

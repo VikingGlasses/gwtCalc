@@ -1,5 +1,9 @@
-package com.calc.benjamin.client;
+package com.calc.benjamin.client.shitty;
 
+import com.calc.benjamin.client.exception.InvalidExpressionException;
+import com.calc.benjamin.client.exception.MissingValueException;
+import com.calc.benjamin.client.exception.NoSuchOperator;
+import com.calc.benjamin.client.util.SimpleMath;
 
 public class SimpleEvaluator implements Evaluator {
 	

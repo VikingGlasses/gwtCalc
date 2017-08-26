@@ -1,4 +1,4 @@
-package com.calc.benjamin.client;
+package com.calc.benjamin.client.shitty;
 
 public interface Evaluator {
 	

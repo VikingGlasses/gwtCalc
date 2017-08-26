@@ -1,4 +1,4 @@
-package com.calc.benjamin.client;
+package com.calc.benjamin.client.composite;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -47,6 +47,14 @@ public class Calculator extends Composite {
 		int rowCount = history.getRowCount();
 		history.setText(rowCount, 0, text);
 		history.setText(rowCount, 1, result);
+	}
+
+	public TextBox getCalcBox() {
+		return calcBox;
+	}
+
+	public FlowPanel getKeyPad() {
+		return keyPad;
 	}
 
 }
