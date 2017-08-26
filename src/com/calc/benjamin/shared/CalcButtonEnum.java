@@ -15,15 +15,19 @@ public enum CalcButtonEnum {
 	ZERO("0", "numericButton"),
 	PLUS("+", "operatorButton"), 
 	MINUS("-", "operatorButton"),
-	DIVITION("/", "operatorButton"), 
+	DIVISION("/", "operatorButton"), 
 	MULTIPLICATION("*", "operatorButton"),
 	MODULUS("%", "operatorButton"),
-	POINT(".", "operatorButton"),
+	PERIOD(".", "operatorButton"),
 	SIGN("+/-", "operatorButton"),
 	EQUALS("=", "operatorButton"),
 	ENTER("\u23ce", "enterButton"),
 	EMPTY("\u0000", "numericButton"),
-	BACKSPACE("\u232b", "backspaceButton");
+	BACKSPACE("\u232b", "backspaceButton"), 
+	LEFT_ARROW("🡐", "backspaceButton"), //\u1f5850 arrow symbol in unicode
+	RIGHT_ARROW("🡒", "backspaceButton"), //\u1f5852 arrow symbol in unicode 
+	LEFT_PARENTHESIS("(", "operatorButton"), 
+	RIGHT_PARENTHESIS(")", "operatorButton");
 	
 	private String symbol;
 	private String style;
@@ -50,7 +54,7 @@ public enum CalcButtonEnum {
 	}
 	
 	public static CalcButtonEnum[] getOperations() {
-		return new CalcButtonEnum[]{PLUS, MINUS, DIVITION, MULTIPLICATION, MODULUS};
+		return new CalcButtonEnum[]{PLUS, MINUS, DIVISION, MULTIPLICATION, MODULUS};
 	}
 
 	public static CalcButtonEnum getE(int nativeKeyCode) {
@@ -83,11 +87,11 @@ public enum CalcButtonEnum {
 			case KeyCodes.KEY_NUM_MINUS:
 				return MINUS;
 			case KeyCodes.KEY_NUM_DIVISION:
-				return DIVITION;
+				return DIVISION;
 			case KeyCodes.KEY_NUM_MULTIPLY:
 				return MULTIPLICATION;
 			case KeyCodes.KEY_NUM_PERIOD:
-				return POINT;
+				return PERIOD;
 			default:
 				return null;
 		}

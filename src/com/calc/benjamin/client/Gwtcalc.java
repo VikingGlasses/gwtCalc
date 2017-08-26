@@ -1,9 +1,10 @@
 package com.calc.benjamin.client;
 
+import java.util.Queue;
+
 import com.calc.benjamin.client.composite.Calculator;
 import com.calc.benjamin.client.exception.InvalidExpressionException;
 import com.calc.benjamin.client.exception.MissingValueException;
-import com.calc.benjamin.client.shitty.Evaluator;
 import com.calc.benjamin.client.shitty.SimpleEvaluator;
 import com.calc.benjamin.shared.CalcButtonEnum;
 import com.google.gwt.core.client.EntryPoint;
@@ -24,7 +25,9 @@ public class Gwtcalc implements EntryPoint {
 	private Calculator calc;
 	private TextBox calcBox;
 	private Label errorMessage;
-	private static final Evaluator evaluator =  new SimpleEvaluator();
+	private Button enterButton;
+	private static final Parser<String[], Queue<CalculatorToken>> infixParser = new ShuntingYardParser();
+	private static final Evaluator<Queue<CalculatorToken>, Double> evaluator =  new ReversePolishNotationEvaluator();
 
 	/**
 	 * Entry point method.
@@ -34,18 +37,27 @@ public class Gwtcalc implements EntryPoint {
 
 		FlowPanel keyPad = calc.getKeyPad();
 		// TODO change layout
-		CalcButtonEnum[] layoutOrder = { CalcButtonEnum.MODULUS, CalcButtonEnum.DIVITION, CalcButtonEnum.MULTIPLICATION,
-				CalcButtonEnum.BACKSPACE, CalcButtonEnum.ONE, CalcButtonEnum.TWO, CalcButtonEnum.THREE,
-				CalcButtonEnum.PLUS, CalcButtonEnum.FOUR, CalcButtonEnum.FIVE, CalcButtonEnum.SIX, CalcButtonEnum.MINUS,
-				CalcButtonEnum.SEVEN, CalcButtonEnum.EIGHT, CalcButtonEnum.NINE, CalcButtonEnum.EMPTY,
-				CalcButtonEnum.EMPTY, CalcButtonEnum.ZERO, CalcButtonEnum.POINT, CalcButtonEnum.ENTER };
+		CalcButtonEnum[] layoutOrder = { 
+				CalcButtonEnum.EMPTY, CalcButtonEnum.LEFT_ARROW, CalcButtonEnum.RIGHT_ARROW, CalcButtonEnum.BACKSPACE,
+				CalcButtonEnum.MODULUS, CalcButtonEnum.LEFT_PARENTHESIS, CalcButtonEnum.RIGHT_PARENTHESIS ,CalcButtonEnum.DIVISION,  
+				CalcButtonEnum.ONE, CalcButtonEnum.TWO, CalcButtonEnum.THREE, CalcButtonEnum.MULTIPLICATION, 
+				CalcButtonEnum.FOUR, CalcButtonEnum.FIVE, CalcButtonEnum.SIX, CalcButtonEnum.MINUS,
+				CalcButtonEnum.SEVEN, CalcButtonEnum.EIGHT, CalcButtonEnum.NINE, CalcButtonEnum.PLUS,
+				CalcButtonEnum.EMPTY, CalcButtonEnum.ZERO, CalcButtonEnum.PERIOD, CalcButtonEnum.ENTER };
 		for (CalcButtonEnum btnEnum : layoutOrder) {
 			Button btn = new Button();
 			btn.setText(btnEnum.getSymbol());
-			btn.setStylePrimaryName("calcButton");
+			if (btnEnum == CalcButtonEnum.EMPTY) {
+				btn.setStylePrimaryName("empty");
+			} else {
+				btn.setStylePrimaryName("calcButton");
+			}
 			btn.addStyleName(btnEnum.getStyle());
 			btn.addClickHandler(event -> handle(btnEnum));
 			keyPad.add(btn);
+			if (btnEnum == CalcButtonEnum.ENTER) {
+				enterButton = btn;
+			}
 		}
 		// TODO change UI split calcBox to 3 labels
 		calcBox = calc.getCalcBox();
@@ -64,13 +76,13 @@ public class Gwtcalc implements EntryPoint {
 		errorMessage = new Label();
 		errorMessage.setVisible(false);
 		RootPanel.get("calc").add(errorMessage);
-		calcBox.setFocus(true);
+		enterButton.setFocus(true);
 	}
 
 	private void handle(CalcButtonEnum btnEnum) {
 		final TextBox activeBox = calcBox;
 		final String currentText = activeBox.getText();
-		activeBox.setFocus(true);
+		enterButton.setFocus(true);
 		
 		switch(btnEnum) {
 		case EMPTY:
@@ -84,27 +96,9 @@ public class Gwtcalc implements EntryPoint {
 		case BACKSPACE:
 			activeBox.setText(removeLastChar(currentText));
 			break;
-		case MODULUS:
-		case DIVITION:
-		case MULTIPLICATION:
-		case PLUS:
-		case MINUS:
-			if (currentText.isEmpty()) {
-				return;
-			}
-			String newText = currentText;
-			// if last was also an operation replace with new operation
-			// else if operation already done, start new calculation on result
-			if (lastIsOperation(currentText)) {
-				newText = removeLastChar(currentText);
-			} else if (containsOperation(currentText)) {
-//				newText = calc.getResult();
-//				handle(CalcButtonEnum.ENTER);
-				return;
-			}
-			// add operation to string
-			newText += btnEnum.getSymbol();
-			activeBox.setText(newText);
+		case LEFT_ARROW:
+			break;
+		case RIGHT_ARROW:
 			break;
 		default:
 			activeBox.setText(currentText + btnEnum.getSymbol());
@@ -118,23 +112,20 @@ public class Gwtcalc implements EntryPoint {
 			return;
 		}
 		try {
-			
-			double result = evaluator.eval(calcBox.getText());
+			String[] splitInfix = calcBox.getText().split("(?=[+\\-/*%\\(\\)])");
+			Queue<CalculatorToken> rPn = infixParser.parse(splitInfix);
+			GWT.log(rPn.toString());
+			double result = evaluator.eval(rPn);
 			String resultText = NumberFormat.getFormat("#.####").format(result);
 			calc.setResult(resultText);
 			errorMessage.setVisible(false);
 		} catch (Throwable e) {
 			String details = e.getMessage();
-			calc.setResult("ERR");
 			if (e instanceof InvalidExpressionException) {
-				details += ((InvalidExpressionException)e).getReason();
+				details += "\n" + ((InvalidExpressionException)e).getReason();
 			}
 			errorMessage.setText(details);
 			errorMessage.setVisible(true);
-			if (e instanceof MissingValueException) {
-				calc.setResult("");
-				errorMessage.setVisible(false);
-			}
 		}
 	}
 

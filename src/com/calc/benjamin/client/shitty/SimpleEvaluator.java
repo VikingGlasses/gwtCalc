@@ -1,11 +1,12 @@
 package com.calc.benjamin.client.shitty;
 
+import com.calc.benjamin.client.Evaluator;
 import com.calc.benjamin.client.exception.InvalidExpressionException;
 import com.calc.benjamin.client.exception.MissingValueException;
 import com.calc.benjamin.client.exception.NoSuchOperator;
 import com.calc.benjamin.client.util.SimpleMath;
 
-public class SimpleEvaluator implements Evaluator {
+public class SimpleEvaluator implements Evaluator<String, Double> {
 	
 	private final String regex; 
 	private final ExpressionParser parser;
@@ -17,7 +18,7 @@ public class SimpleEvaluator implements Evaluator {
 	}
 	
 	@Override
-	public double eval(String expression) throws Throwable {
+	public Double eval(String expression) throws Throwable {
 		try {
 			// split expression
 			String[] parts = expression.split(regex);
@@ -36,7 +37,7 @@ public class SimpleEvaluator implements Evaluator {
 		} catch (NoSuchOperator e) {
 			throw new InvalidExpressionException(e.getReason());
 		} catch (NumberFormatException e) {
-			throw new InvalidExpressionException("parsing failed");
+			throw new InvalidExpressionException("Parsing failed " + e.getMessage());
 		} catch (Exception e) {
 			if (e instanceof InvalidExpressionException || e instanceof MissingValueException) {
 				throw e;
