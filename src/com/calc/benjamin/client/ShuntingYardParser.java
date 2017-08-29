@@ -5,6 +5,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
+import com.calc.benjamin.client.exception.ParenthesisMissMatchException;
+import com.google.gwt.core.shared.GWT;
+
 public class ShuntingYardParser implements Parser<String[], Queue<CalculatorToken>> {
 
 	@Override
@@ -40,16 +43,20 @@ public class ShuntingYardParser implements Parser<String[], Queue<CalculatorToke
 							queue.add(operatorStack.pop());
 							peek = operatorStack.peek();
 						}
+						// TODO check parenthesis associativity
 						operatorStack.pop();
 					} catch (EmptyStackException e) {
 						throw new ParenthesisMissMatchException();
 					}
+				} else {
+					GWT.log("Unused token: '" + token + "'");
 				}
 			}
 		}
 		while (!operatorStack.isEmpty()) {
 			if (operatorStack.peek().getTokenType() == CalculatorTokenType.PARENTHESIS) {
-				throw new ParenthesisMissMatchException();
+				operatorStack.pop();
+//				throw new ParenthesisMissMatchException();
 			}
 			queue.add(operatorStack.pop());
 		}

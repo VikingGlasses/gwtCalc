@@ -18,7 +18,7 @@ public class SimpleEvaluator implements Evaluator<String, Double> {
 	}
 	
 	@Override
-	public Double eval(String expression) throws Throwable {
+	public Double eval(String expression) throws Exception {
 		try {
 			// split expression
 			String[] parts = expression.split(regex);

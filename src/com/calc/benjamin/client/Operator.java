@@ -13,6 +13,10 @@ public class Operator extends CalculatorToken {
 		return op.getPrecedence();
 	}
 	
+	public Operation getOperation() {
+		return op;
+	}
+	
 	@Override
 	public String toString() {
 		return op.toString();

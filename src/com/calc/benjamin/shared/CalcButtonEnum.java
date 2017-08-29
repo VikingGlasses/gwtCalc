@@ -19,15 +19,15 @@ public enum CalcButtonEnum {
 	MULTIPLICATION("*", "operatorButton"),
 	MODULUS("%", "operatorButton"),
 	PERIOD(".", "operatorButton"),
+	LEFT_PARENTHESIS("(", "operatorButton"), 
+	RIGHT_PARENTHESIS(")", "operatorButton"),
 	SIGN("+/-", "operatorButton"),
 	EQUALS("=", "operatorButton"),
 	ENTER("\u23ce", "enterButton"),
 	EMPTY("\u0000", "numericButton"),
 	BACKSPACE("\u232b", "backspaceButton"), 
 	LEFT_ARROW("🡐", "backspaceButton"), //\u1f5850 arrow symbol in unicode
-	RIGHT_ARROW("🡒", "backspaceButton"), //\u1f5852 arrow symbol in unicode 
-	LEFT_PARENTHESIS("(", "operatorButton"), 
-	RIGHT_PARENTHESIS(")", "operatorButton");
+	RIGHT_ARROW("🡒", "backspaceButton"); //\u1f5852 arrow symbol in unicode 
 	
 	private String symbol;
 	private String style;

@@ -1,5 +1,6 @@
 package com.calc.benjamin.client.util;
 
+import com.calc.benjamin.client.Operation;
 import com.calc.benjamin.client.exception.NoSuchOperator;
 
 public class SimpleMath {
@@ -24,6 +25,30 @@ public class SimpleMath {
 			break;
 		default:
 			throw new NoSuchOperator("Missing operation for '" + operator + "'");
+		}
+		return result;
+	}
+
+	public static double calc(Operation operation, double val1, double val2) throws NoSuchOperator {
+		double result;
+		switch (operation) {
+		case DIVISION:
+			result = divide(val1, val2);
+			break;
+		case MINUS:
+			result = subtract(val1, val2);
+			break;
+		case MODULU:
+			result = mod(val1, val2);
+			break;
+		case MULTIPLICATION:
+			result = multiply(val1, val2);
+			break;
+		case PLUS:
+			result = add(val1, val2);
+			break;
+		default:
+			throw new NoSuchOperator("Missing operation for '" + operation.toString() + "'");
 		}
 		return result;
 	}

@@ -15,5 +15,10 @@ public abstract class CalculatorToken {
 	public void setTokenType(CalculatorTokenType tokenType) {
 		this.tokenType = tokenType;
 	}
+	
+	@Override
+	public String toString() {
+		return tokenType.name();
+	}
 
 }

@@ -9,6 +9,10 @@ import com.calc.benjamin.client.shitty.SimpleEvaluator;
 import com.calc.benjamin.shared.CalcButtonEnum;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -59,30 +63,27 @@ public class Gwtcalc implements EntryPoint {
 				enterButton = btn;
 			}
 		}
-		// TODO change UI split calcBox to 3 labels
 		calcBox = calc.getCalcBox();
-		calcBox.setEnabled(false);
-		calcBox.addKeyDownHandler(event -> {
-			// switch case keyCode to filter out bad keys.
-			// if bad key remove from textBox
-			// else send enum to handle?
-		});
-		calcBox.addKeyUpHandler(event -> {
-			String calcText = calcBox.getText();
-			calcText = calcText.substring(0, calcText.length() - 1);
-			calcBox.setText(calcText);
-		});
+		// TODO enable typing with filtering
+		calcBox.setReadOnly(true);
+		KeyPressHandler h =  event -> {
+			char keyPressed = event.getCharCode();
+			GWT.log("KeyPressed: '" + keyPressed + "'");
+			};
+		calcBox.addDomHandler(h, KeyPressEvent.getType());
 		RootPanel.get("calc").add(calc);
 		errorMessage = new Label();
 		errorMessage.setVisible(false);
 		RootPanel.get("calc").add(errorMessage);
-		enterButton.setFocus(true);
+		calcBox.setFocus(true);
 	}
 
 	private void handle(CalcButtonEnum btnEnum) {
 		final TextBox activeBox = calcBox;
 		final String currentText = activeBox.getText();
-		enterButton.setFocus(true);
+		activeBox.setFocus(true);
+		int cursorPos = activeBox.getCursorPos();
+		GWT.log("pos: " + cursorPos);
 		
 		switch(btnEnum) {
 		case EMPTY:
@@ -94,14 +95,36 @@ public class Gwtcalc implements EntryPoint {
 			calc.setResult("");
 			break;
 		case BACKSPACE:
-			activeBox.setText(removeLastChar(currentText));
+			activeBox.setText(removeCharAt(currentText, cursorPos));
+			if (cursorPos > 0) {
+				activeBox.setCursorPos(cursorPos - 1);
+			} else {
+				activeBox.setCursorPos(cursorPos);
+			}
 			break;
 		case LEFT_ARROW:
+			if (cursorPos > 0) {
+				activeBox.setCursorPos(cursorPos - 1);
+			}
 			break;
 		case RIGHT_ARROW:
+			if (cursorPos < activeBox.getText().length()) {
+				activeBox.setCursorPos(cursorPos + 1);
+			}
+			break;
+		case LEFT_PARENTHESIS:
+			String parenthesis = btnEnum.getSymbol();
+			if (cursorPos == activeBox.getText().length()) {
+				parenthesis += ")";
+			}
+			String newText = currentText.substring(0, cursorPos) + parenthesis + currentText.substring(cursorPos);
+			activeBox.setText(newText);
+			activeBox.setCursorPos(cursorPos + 1);
 			break;
 		default:
-			activeBox.setText(currentText + btnEnum.getSymbol());
+			newText = currentText.substring(0, cursorPos) + btnEnum.getSymbol() + currentText.substring(cursorPos);
+			activeBox.setText(newText);
+			activeBox.setCursorPos(cursorPos + 1);
 			break;
 		}
 		updateResult();
@@ -109,23 +132,28 @@ public class Gwtcalc implements EntryPoint {
 
 	private void updateResult() {
 		if (calcBox.getText().isEmpty()) {
+			calc.setResult("");
 			return;
 		}
 		try {
 			String[] splitInfix = calcBox.getText().split("(?=[+\\-/*%\\(\\)])");
 			Queue<CalculatorToken> rPn = infixParser.parse(splitInfix);
 			GWT.log(rPn.toString());
-			double result = evaluator.eval(rPn);
-			String resultText = NumberFormat.getFormat("#.####").format(result);
+			Double result = evaluator.eval(rPn);
+			GWT.log("result: " + result);
+			String resultText = NumberFormat.getFormat("#.####").format(result.doubleValue());
 			calc.setResult(resultText);
 			errorMessage.setVisible(false);
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			String details = e.getMessage();
 			if (e instanceof InvalidExpressionException) {
 				details += "\n" + ((InvalidExpressionException)e).getReason();
 			}
 			errorMessage.setText(details);
 			errorMessage.setVisible(true);
+			if (details.isEmpty()) {
+				errorMessage.setText("Somthing went wrong. You figure it out!");
+			}
 		}
 	}
 
@@ -153,8 +181,14 @@ public class Gwtcalc implements EntryPoint {
 		return false;
 	}
 
-	private String removeLastChar(String text) {
-		return text.substring(0, text.length() - 1);
+	private String removeCharAt(String text, int index) {
+		String result = "";
+		if (index == 0) {
+			result = text;
+		} else {
+			result = text.substring(0, index - 1) + text.substring(index);
+		}
+		return result;
 	}
 
 }
