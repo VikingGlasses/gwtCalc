@@ -4,13 +4,9 @@ import java.util.Queue;
 
 import com.calc.benjamin.client.composite.Calculator;
 import com.calc.benjamin.client.exception.InvalidExpressionException;
-import com.calc.benjamin.client.exception.MissingValueException;
-import com.calc.benjamin.client.shitty.SimpleEvaluator;
 import com.calc.benjamin.shared.CalcButtonEnum;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.i18n.client.NumberFormat;
@@ -29,7 +25,6 @@ public class Gwtcalc implements EntryPoint {
 	private Calculator calc;
 	private TextBox calcBox;
 	private Label errorMessage;
-	private Button enterButton;
 	private static final Parser<String[], Queue<CalculatorToken>> infixParser = new ShuntingYardParser();
 	private static final Evaluator<Queue<CalculatorToken>, Double> evaluator =  new ReversePolishNotationEvaluator();
 
@@ -59,9 +54,6 @@ public class Gwtcalc implements EntryPoint {
 			btn.addStyleName(btnEnum.getStyle());
 			btn.addClickHandler(event -> handle(btnEnum));
 			keyPad.add(btn);
-			if (btnEnum == CalcButtonEnum.ENTER) {
-				enterButton = btn;
-			}
 		}
 		calcBox = calc.getCalcBox();
 		// TODO enable typing with filtering
@@ -155,30 +147,6 @@ public class Gwtcalc implements EntryPoint {
 				errorMessage.setText("Somthing went wrong. You figure it out!");
 			}
 		}
-	}
-
-	private boolean containsOperation(String text) {
-		if (text.length() == 0) {
-			return false;
-		}
-		for (CalcButtonEnum o : CalcButtonEnum.getOperations()) {
-			if (text.contains(o.getSymbol())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean lastIsOperation(String text) {
-		if (text.length() == 0) {
-			return false;
-		}
-		for (CalcButtonEnum o : CalcButtonEnum.getOperations()) {
-			if (text.endsWith(o.getSymbol())) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private String removeCharAt(String text, int index) {

@@ -108,3 +108,4 @@ gwt-unitCache/
 
 # End of https://www.gitignore.io/api/java,linux,eclipse,java-web
 
+/test-classes/
