@@ -11,14 +11,14 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Calculator extends Composite {
+public class CalculatorUi extends Composite {
 
 	private static CalculatorUiBinder uiBinder = GWT.create(CalculatorUiBinder.class);
 
-	interface CalculatorUiBinder extends UiBinder<Widget, Calculator> {
+	interface CalculatorUiBinder extends UiBinder<Widget, CalculatorUi> {
 	}
 
-	public Calculator() {
+	public CalculatorUi() {
 		initWidget(uiBinder.createAndBindUi(this));
 		history.getColumnFormatter().addStyleName(0, "calcBox");
 		history.getColumnFormatter().addStyleName(1, "resultLabel");

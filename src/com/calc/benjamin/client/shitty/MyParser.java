@@ -3,6 +3,7 @@ package com.calc.benjamin.client.shitty;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class MyParser implements ExpressionParser {
 
 	@Override

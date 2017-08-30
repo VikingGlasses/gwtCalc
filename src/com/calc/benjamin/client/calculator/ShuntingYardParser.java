@@ -1,4 +1,4 @@
-package com.calc.benjamin.client;
+package com.calc.benjamin.client.calculator;
 
 import java.util.EmptyStackException;
 import java.util.LinkedList;
@@ -17,14 +17,13 @@ public class ShuntingYardParser implements Parser<String[], Queue<CalculatorToke
 		for (String token : expression) {
 			if (!token.isEmpty()) {
 				if (isNumber(token)) {
-					queue.add(new Operand(CalculatorTokenType.OPERAND, token));
+					queue.add(new CalculatorToken(CalculatorTokenType.OPERAND, token));
 				} else if (isOperator(token)) {
-					Operator newOp = new Operator(CalculatorTokenType.OPERATOR, token);
+					CalculatorToken newOp = new CalculatorToken(CalculatorTokenType.OPERATOR, token);
 					while (!operatorStack.isEmpty()) {
 						CalculatorToken calcToken = operatorStack.peek();
 						if (calcToken.getTokenType() == CalculatorTokenType.OPERATOR) {
-							Operator op = (Operator) calcToken;
-							if (op.getPrecedance() >= newOp.getPrecedance()) {
+							if (Operator.getOperation(calcToken.getValue()).getPrecedence() >= Operator.getOperation(newOp.getValue()).getPrecedence()) {
 								queue.add(operatorStack.pop());
 							} else {
 								break;
@@ -35,7 +34,7 @@ public class ShuntingYardParser implements Parser<String[], Queue<CalculatorToke
 					}
 					operatorStack.add(newOp);
 				} else if (token.equals("(")) {
-					operatorStack.push(new Parenthesis(CalculatorTokenType.PARENTHESIS, Associativity.LEFT));
+					operatorStack.push(new CalculatorToken(CalculatorTokenType.PARENTHESIS, token));
 				} else if (token.equals(")")) {
 					try {
 						CalculatorToken peek = operatorStack.peek();

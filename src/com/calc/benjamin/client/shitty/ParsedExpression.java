@@ -2,6 +2,7 @@ package com.calc.benjamin.client.shitty;
 
 import java.util.List;
 
+@Deprecated
 public class ParsedExpression {
 
 	private double[] values;

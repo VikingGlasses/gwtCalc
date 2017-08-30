@@ -1,6 +1,6 @@
 package com.calc.benjamin.client.util;
 
-import com.calc.benjamin.client.Operation;
+import com.calc.benjamin.client.calculator.Operator;
 import com.calc.benjamin.client.exception.NoSuchOperator;
 
 public class SimpleMath {
@@ -29,7 +29,7 @@ public class SimpleMath {
 		return result;
 	}
 
-	public static double calc(Operation operation, double val1, double val2) throws NoSuchOperator {
+	public static double calc(Operator operation, double val1, double val2) throws NoSuchOperator {
 		double result;
 		switch (operation) {
 		case DIVISION:

@@ -1,11 +1,12 @@
 package com.calc.benjamin.client.shitty;
 
-import com.calc.benjamin.client.Evaluator;
+import com.calc.benjamin.client.calculator.Evaluator;
 import com.calc.benjamin.client.exception.InvalidExpressionException;
 import com.calc.benjamin.client.exception.MissingValueException;
 import com.calc.benjamin.client.exception.NoSuchOperator;
 import com.calc.benjamin.client.util.SimpleMath;
 
+@Deprecated
 public class SimpleEvaluator implements Evaluator<String, Double> {
 	
 	private final String regex; 

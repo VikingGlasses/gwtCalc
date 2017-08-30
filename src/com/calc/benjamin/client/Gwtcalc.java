@@ -2,7 +2,12 @@ package com.calc.benjamin.client;
 
 import java.util.Queue;
 
-import com.calc.benjamin.client.composite.Calculator;
+import com.calc.benjamin.client.calculator.CalculatorToken;
+import com.calc.benjamin.client.calculator.Evaluator;
+import com.calc.benjamin.client.calculator.Parser;
+import com.calc.benjamin.client.calculator.ReversePolishNotationEvaluator;
+import com.calc.benjamin.client.calculator.ShuntingYardParser;
+import com.calc.benjamin.client.composite.CalculatorUi;
 import com.calc.benjamin.client.exception.InvalidExpressionException;
 import com.calc.benjamin.shared.CalcButtonEnum;
 import com.google.gwt.core.client.EntryPoint;
@@ -22,7 +27,7 @@ import com.google.gwt.user.client.ui.TextBox;
 
 public class Gwtcalc implements EntryPoint {
 
-	private Calculator calc;
+	private CalculatorUi calc;
 	private TextBox calcBox;
 	private Label errorMessage;
 	private static final Parser<String[], Queue<CalculatorToken>> infixParser = new ShuntingYardParser();
@@ -32,7 +37,7 @@ public class Gwtcalc implements EntryPoint {
 	 * Entry point method.
 	 */
 	public void onModuleLoad() {
-		calc = new Calculator();
+		calc = new CalculatorUi();
 
 		FlowPanel keyPad = calc.getKeyPad();
 		// TODO change layout

@@ -1,13 +1,9 @@
-package com.calc.benjamin.client;
+package com.calc.benjamin.client.calculator;
 
-public class CalculatorToken {
+public final class CalculatorToken {
 	
 	private CalculatorTokenType tokenType;
 	private String value;
-
-	public CalculatorToken(CalculatorTokenType type) {
-		this.tokenType = type;
-	}
 
 	public CalculatorToken(CalculatorTokenType type, String value) {
 		this.tokenType = type;
@@ -24,7 +20,7 @@ public class CalculatorToken {
 
 	@Override
 	public String toString() {
-		return tokenType.name();
+		return value;
 	}
 
 }

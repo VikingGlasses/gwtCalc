@@ -1,4 +1,4 @@
-package com.calc.benjamin.client;
+package com.calc.benjamin.client.calculator;
 
 public interface Parser<T1, T2> {
 	

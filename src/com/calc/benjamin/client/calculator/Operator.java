@@ -1,6 +1,6 @@
-package com.calc.benjamin.client;
+package com.calc.benjamin.client.calculator;
 
-public enum Operation {
+public enum Operator {
 	
 	PLUS(2, Associativity.LEFT),
 	MINUS(2, Associativity.LEFT),
@@ -11,7 +11,7 @@ public enum Operation {
 	private int precedence;
 	private Associativity ass;
 
-	private Operation(int precedence, Associativity ass) {
+	private Operator(int precedence, Associativity ass) {
 		this.precedence = precedence;
 		this.ass = ass;
 	}
@@ -24,8 +24,8 @@ public enum Operation {
 		return ass;
 	}
 	
-	public static Operation getOperation(String symbol) {
-		Operation op;
+	public static Operator getOperation(String symbol) {
+		Operator op;
 		switch (symbol) {
 		case "+":
 			op = PLUS;
