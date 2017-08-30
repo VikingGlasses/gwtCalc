@@ -1,7 +1,6 @@
-package com.calc.benjamin.client.util;
+package com.calc.benjamin.client.calculator;
 
-import com.calc.benjamin.client.calculator.Operator;
-import com.calc.benjamin.client.exception.NoSuchOperator;
+import com.calc.benjamin.client.calculator.exception.NoSuchOperator;
 
 public class SimpleMath {
 
@@ -24,7 +23,7 @@ public class SimpleMath {
 			result = mod(val1, val2);
 			break;
 		default:
-			throw new NoSuchOperator("Missing operation for '" + operator + "'");
+			throw new NoSuchOperator(operator);
 		}
 		return result;
 	}
@@ -48,7 +47,7 @@ public class SimpleMath {
 			result = add(val1, val2);
 			break;
 		default:
-			throw new NoSuchOperator("Missing operation for '" + operation.toString() + "'");
+			throw new NoSuchOperator(operation.toString());
 		}
 		return result;
 	}

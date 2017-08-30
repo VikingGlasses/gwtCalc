@@ -1,7 +1,9 @@
 package com.calc.benjamin.client.calculator;
 
-public interface Parser<T1, T2> {
+import com.calc.benjamin.client.calculator.exception.ParseException;
+
+public interface Parser<I, O> {
 	
-	T2 parse(T1 expression) throws Exception;
+	O parse(I expression) throws ParseException;
 
 }

@@ -23,6 +23,13 @@ public enum Operator {
 	public Associativity getAssociativity() {
 		return ass;
 	}
+
+	public static boolean isOperator(String string) {
+		if (string.matches("([+/*%\\-])")) {
+			return true;
+		}
+		return false;
+	}
 	
 	public static Operator getOperation(String symbol) {
 		Operator op;

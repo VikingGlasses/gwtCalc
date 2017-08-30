@@ -5,30 +5,29 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
-import com.calc.benjamin.client.exception.ParenthesisMissMatchException;
-import com.google.gwt.core.shared.GWT;
+import com.calc.benjamin.client.calculator.exception.ParseException;
 
 public class ShuntingYardParser implements Parser<String[], Queue<CalculatorToken>> {
 
 	@Override
-	public Queue<CalculatorToken> parse(String[] expression) throws ParenthesisMissMatchException {
+	public Queue<CalculatorToken> parse(String[] expression) throws ParseException {
 		Queue<CalculatorToken> queue = new LinkedList<>();
 		Stack<CalculatorToken> operatorStack = new Stack<>();
 		for (String token : expression) {
 			if (!token.isEmpty()) {
 				if (isNumber(token)) {
 					queue.add(new CalculatorToken(CalculatorTokenType.OPERAND, token));
-				} else if (isOperator(token)) {
+				} else if (Operator.isOperator(token)) {
 					CalculatorToken newOp = new CalculatorToken(CalculatorTokenType.OPERATOR, token);
 					while (!operatorStack.isEmpty()) {
-						CalculatorToken calcToken = operatorStack.peek();
-						if (calcToken.getTokenType() == CalculatorTokenType.OPERATOR) {
-							if (Operator.getOperation(calcToken.getValue()).getPrecedence() >= Operator.getOperation(newOp.getValue()).getPrecedence()) {
-								queue.add(operatorStack.pop());
-							} else {
-								break;
-							}
-						} else if (calcToken.getTokenType() == CalculatorTokenType.PARENTHESIS) {
+						CalculatorToken topStackOperator = operatorStack.peek();
+						if (topStackOperator.getTokenType() != CalculatorTokenType.OPERATOR) {
+							break;
+						}
+						int topStackOpPrecedance = Operator.getOperation(topStackOperator.getValue()).getPrecedence();
+						if (topStackOpPrecedance >= Operator.getOperation(newOp.getValue()).getPrecedence()) {
+							queue.add(operatorStack.pop());
+						} else {
 							break;
 						}
 					}
@@ -42,33 +41,26 @@ public class ShuntingYardParser implements Parser<String[], Queue<CalculatorToke
 							queue.add(operatorStack.pop());
 							peek = operatorStack.peek();
 						}
-						// TODO check parenthesis associativity
 						operatorStack.pop();
 					} catch (EmptyStackException e) {
-						throw new ParenthesisMissMatchException();
+						throw new ParseException("Missmatched parenthesis");
 					}
 				} else {
-					GWT.log("Unused token: '" + token + "'");
+					throw new ParseException("Unhandled token: '" + token + "'");
 				}
 			}
 		}
 		while (!operatorStack.isEmpty()) {
 			if (operatorStack.peek().getTokenType() == CalculatorTokenType.PARENTHESIS) {
 				operatorStack.pop();
-//				throw new ParenthesisMissMatchException();
+				throw new ParseException("Missmatched parenthesis");
 			}
 			queue.add(operatorStack.pop());
 		}
 		return queue;
 	}
 
-	private boolean isOperator(String string) {
-		if (string.matches("([+/*%\\-])")) {
-			return true;
-		}
-		return false;
-	}
-
+	// TODO move somewhere else
 	private boolean isNumber(String string) {
 		try {
 			Double.parseDouble(string);

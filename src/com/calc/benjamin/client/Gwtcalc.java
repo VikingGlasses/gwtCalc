@@ -7,9 +7,9 @@ import com.calc.benjamin.client.calculator.Evaluator;
 import com.calc.benjamin.client.calculator.Parser;
 import com.calc.benjamin.client.calculator.ReversePolishNotationEvaluator;
 import com.calc.benjamin.client.calculator.ShuntingYardParser;
+import com.calc.benjamin.client.calculator.exception.EvaluationException;
+import com.calc.benjamin.client.calculator.exception.ParseException;
 import com.calc.benjamin.client.composite.CalculatorUi;
-import com.calc.benjamin.client.exception.InvalidExpressionException;
-import com.calc.benjamin.shared.CalcButtonEnum;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -80,7 +80,6 @@ public class Gwtcalc implements EntryPoint {
 		final String currentText = activeBox.getText();
 		activeBox.setFocus(true);
 		int cursorPos = activeBox.getCursorPos();
-		GWT.log("pos: " + cursorPos);
 		
 		switch(btnEnum) {
 		case EMPTY:
@@ -129,28 +128,20 @@ public class Gwtcalc implements EntryPoint {
 
 	private void updateResult() {
 		if (calcBox.getText().isEmpty()) {
-			calc.setResult("");
 			return;
 		}
 		try {
 			String[] splitInfix = calcBox.getText().split("(?=[+\\-/*%\\(\\)])");
 			Queue<CalculatorToken> rPn = infixParser.parse(splitInfix);
-			GWT.log(rPn.toString());
+//			GWT.log("Postfix:  + "rPn.toString());
 			Double result = evaluator.eval(rPn);
-			GWT.log("result: " + result);
 			String resultText = NumberFormat.getFormat("#.####").format(result.doubleValue());
 			calc.setResult(resultText);
 			errorMessage.setVisible(false);
-		} catch (Exception e) {
+		} catch (EvaluationException | ParseException e) {
 			String details = e.getMessage();
-			if (e instanceof InvalidExpressionException) {
-				details += "\n" + ((InvalidExpressionException)e).getReason();
-			}
 			errorMessage.setText(details);
 			errorMessage.setVisible(true);
-			if (details.isEmpty()) {
-				errorMessage.setText("Somthing went wrong. You figure it out!");
-			}
 		}
 	}
 

@@ -1,7 +1,9 @@
 package com.calc.benjamin.client.calculator;
 
-public interface Evaluator<T1, T2> {
+import com.calc.benjamin.client.calculator.exception.EvaluationException;
+
+public interface Evaluator<I, O> {
 	
-	T2 eval(T1 expression) throws Exception;
+	O eval(I expression) throws EvaluationException;
 
 }

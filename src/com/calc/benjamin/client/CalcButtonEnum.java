@@ -1,4 +1,4 @@
-package com.calc.benjamin.shared;
+package com.calc.benjamin.client;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 
