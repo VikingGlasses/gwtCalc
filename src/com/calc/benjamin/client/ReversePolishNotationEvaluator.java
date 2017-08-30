@@ -19,14 +19,14 @@ public class ReversePolishNotationEvaluator implements Evaluator<Queue<Calculato
 				Operator operator = (Operator) token;
 				Operand val2 = operandStack.pop();
 				Operand val1 = operandStack.pop();
-				double result = SimpleMath.calc(operator.getOperation(), val1.getValue(), val2.getValue());
+				double result = SimpleMath.calc(operator.getOperation(), val1.getOperandValue(), val2.getOperandValue());
 				operandStack.add(new Operand(CalculatorTokenType.OPERAND, result));
 			} else {
 				// TODO throw exception?
 				GWT.log("Token missmatch: " + token.toString());
 			}
 		}
-		return operandStack.pop().getValue();
+		return operandStack.pop().getOperandValue();
 	}
 
 }

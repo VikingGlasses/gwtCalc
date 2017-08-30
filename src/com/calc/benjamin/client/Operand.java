@@ -14,7 +14,7 @@ public class Operand extends CalculatorToken {
 		this.value = Double.parseDouble(string);
 	}
 
-	public double getValue() {
+	public double getOperandValue() {
 		return value;
 	}
 	
